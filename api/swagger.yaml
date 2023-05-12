@@ -1,0 +1,154 @@
+openapi: 3.0.0
+info:
+  version: v1.0
+  title: Comment API
+  description: 
+    This is the comment API.
+servers:
+  - url: 'http://192.168.0.100/quiz/v1'
+
+paths:
+  /comment:
+    post:
+      tags: 
+        - comment
+      summary: create a new comment.
+      description: 
+        create a new comment. <br>
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/comment'
+            example:
+                uuid: ''
+                parentid: 'a1205dab-824a-4e3a-bcd2-ed6102e60ae9'
+                comment: "根據中央氣象局地震測報中心地震報告，這起規模..."
+                author: "氣象局網站"
+                update: "2022-06-01T01:12:33Z"
+                favorite: false              
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/comment'
+              example:
+                  uuid: '3fa85f64-5717-4562-b3fc-2c963f66afa6'
+                  parentid: 'a1205dab-824a-4e3a-bcd2-ed6102e60ae9'
+                  comment: "根據中央氣象局地震測報中心地震報告，這起規模..."
+                  author: "氣象局網站"
+                  update: "2022-06-01T01:12:33Z"
+                  favorite: false
+        '400':
+          description: create comment fail
+
+  /comment/{uuid}:
+    get:
+      tags: 
+        - comment
+      summary: get comment by uuid
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string
+      description: get comment by uuid.
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/comment'
+              example: 
+                  uuid: '3fa85f64-5717-4562-b3fc-2c963f66afa6'
+                  parentid: 'a1205dab-824a-4e3a-bcd2-ed6102e60ae9'
+                  comment: "根據中央氣象局地震測報中心地震報告，這起規模..."
+                  author: "氣象局網站"
+                  update: "2022-06-01T01:12:33Z"
+                  favorite: false
+        '400':
+          description: comment uuid not found
+
+    put:
+      tags: 
+        - comment
+      summary: modify comment by uuid.
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string      
+      description: 
+        modify comment by uuid.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/comment'
+            example: 
+                uuid: '3fa85f64-5717-4562-b3fc-2c963f66afa6'
+                parentid: 'a1205dab-824a-4e3a-bcd2-ed6102e60ae9'
+                comment: "根據中央氣象局地震測報中心地震報告，這起規模..."
+                author: "氣象局網站"
+                update: "2022-06-01T01:12:33Z"
+                favorite: true              
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/comment'
+              example:
+                  uuid: '3fa85f64-5717-4562-b3fc-2c963f66afa6'
+                  parentid: 'a1205dab-824a-4e3a-bcd2-ed6102e60ae9'
+                  comment: "根據中央氣象局地震測報中心地震報告，這起規模..."
+                  author: "氣象局網站"
+                  update: "2022-06-01T01:12:33Z"
+                  favorite: true
+        '400':
+          description: modify fail
+
+    delete:
+      tags: 
+        - comment
+      summary: remove comment by uuid.
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          schema:
+            type: string      
+      description: 
+        remove comment by uuid.
+      responses:
+        '200':
+          description: success
+        '400':
+          description: delete fail
+
+components:
+  schemas:
+    comment:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        parentid:
+          type: string
+          format: uuid
+        comment:
+          type: string
+        author:
+          type: string
+        update:
+          type: string
+          format: date-time
+        favorite:
+          type: boolean
