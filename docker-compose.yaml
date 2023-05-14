@@ -1,0 +1,29 @@
+version: '3.4'
+
+services:
+  database:
+    image: mariadb
+    environment:
+      - MARIADB_ROOT_PASSWORD=123123
+    expose:
+      - "3306"
+    volumes:
+      - ./sql:/docker-entrypoint-initdb.d
+    command: '--init-file /docker-entrypoint-initdb.d/init.sql'
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -P 3306 -p$$(echo $$MARIADB_ROOT_PASSWORD) | grep 'mysqld is alive' || exit 1"]
+      interval: 2s
+      retries: 15
+
+  server:
+    image: proj-quiz1
+    environment:
+      - QUIZ1_DB_HOST=database
+      - QUIZ1_DB_PASSWD=123123
+      - QUIZ1_APP_PORT=8080
+    ports:
+      - "8080:8080"
+    depends_on:
+      database:
+        condition: service_healthy
+    restart: on-failure
