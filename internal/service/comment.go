@@ -30,7 +30,7 @@ func (s *PersistedCommentService) GetComment(uuid string) (*model.Comment, error
 func (s *PersistedCommentService) EnsureComment(comment *model.Comment) error {
 
 	oldcmt := &model.Comment{}
-	err := s.db.Where("uuid = ?", comment.Uuid).Take(oldcmt).Error
+	err := s.db.Select("id").Where("uuid = ?", comment.Uuid).Take(oldcmt).Error
 
 	if err == nil {
 		comment.ID = oldcmt.ID
@@ -38,7 +38,7 @@ func (s *PersistedCommentService) EnsureComment(comment *model.Comment) error {
 		return err
 	}
 
-	return s.db.Debug().Save(comment).Error
+	return s.db.Save(comment).Error
 }
 
 func (s *PersistedCommentService) DeleteComment(uuid string) error {
